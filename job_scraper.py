@@ -52,23 +52,33 @@ def parse_post_date(raw_post_date):
 
 def insert_job_data(conn, job_data):
     """Inserts a single job record into the 'jobs' table."""
-    if not job_data.get('job_url'): return False
+    # Map 'url' to 'job_url' if coming from raw Apify data
+    if 'url' in job_data and 'job_url' not in job_data:
+        job_data['job_url'] = job_data['url']
+
+    if not job_data.get('job_url'): 
+        print(f"⚠️ Skipping item: No job_url found. Keys: {list(job_data.keys())}")
+        return False
     job_data['job_id'] = job_data.get('id') or hashlib.md5(job_data['job_url'].encode('utf-8')).hexdigest()
     parsed_date = parse_post_date(job_data.get('postedAt'))
-    with conn.cursor() as cursor:
-        cursor.execute(sql.SQL("""
-            INSERT INTO jobs (job_id, job_title, company_name, location, post_date, job_description, salary_info, job_url, source_website, extracted_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'Indeed', %s)
-            ON CONFLICT (job_url) DO UPDATE SET
-                job_title = EXCLUDED.job_title, company_name = EXCLUDED.company_name, location = EXCLUDED.location,
-                post_date = EXCLUDED.post_date, job_description = EXCLUDED.job_description, salary_info = EXCLUDED.salary_info,
-                extracted_at = EXCLUDED.extracted_at;
-        """), (
-            job_data['job_id'], job_data.get('positionName'), job_data.get('company'), job_data.get('location'),
-            parsed_date, job_data.get('description'), job_data.get('salary'), job_data.get('url'),
-            datetime.datetime.now(datetime.timezone.utc)
-        ))
-        conn.commit()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(sql.SQL("""
+                INSERT INTO jobs (job_id, job_title, company_name, location, post_date, job_description, salary_info, job_url, source_website, extracted_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'Indeed', %s)
+                ON CONFLICT (job_url) DO UPDATE SET
+                    job_title = EXCLUDED.job_title, company_name = EXCLUDED.company_name, location = EXCLUDED.location,
+                    post_date = EXCLUDED.post_date, job_description = EXCLUDED.job_description, salary_info = EXCLUDED.salary_info,
+                    extracted_at = EXCLUDED.extracted_at;
+            """), (
+                job_data['job_id'], job_data.get('positionName'), job_data.get('company'), job_data.get('location'),
+                parsed_date, job_data.get('description'), job_data.get('salary'), job_data.get('job_url'),
+                datetime.datetime.now(datetime.timezone.utc)
+            ))
+            conn.commit()
+    except Exception as e:
+        print(f"❌ DB Insert Error: {e}")
+        return False
     return True
 
 async def scrape_and_store_jobs(keyword, location, max_items):
