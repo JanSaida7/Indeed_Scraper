@@ -69,6 +69,26 @@
 
             <!-- Scrape Status Notification -->
             <div id="scrape-status" class="hidden mb-8 p-4 rounded-md text-center font-medium"></div>
+
+            <!-- Latest Results Preview -->
+            <div id="latest-results-container" class="hidden">
+                <h3 class="text-xl font-semibold mb-4 text-center">Latest Search Results</h3>
+                <div class="overflow-x-auto bg-white rounded-lg shadow">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-indigo-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Job Title
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="latest-results-body" class="divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- Database Tab Content -->
@@ -184,8 +204,7 @@
 
         // --- Event Listeners ---
 
-        // Fetch jobs when the page loads (initially load data even if hidden? or wait for tab click?)
-        // Let's load it on start so debug view is populated if needed
+        // Fetch jobs when the page loads
         document.addEventListener('DOMContentLoaded', fetchAndDisplayJobs);
 
         // Handle the scrape form submission
@@ -211,18 +230,45 @@
 
             // Show Status Box
             const statusBox = document.getElementById('scrape-status');
+            const resultsContainer = document.getElementById('latest-results-container');
+            const resultsBody = document.getElementById('latest-results-body');
+
             statusBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            resultsContainer.classList.add('hidden'); // Hide previous results
 
             if (result.status === 'success') {
                 statusBox.classList.add('bg-green-100', 'text-green-800');
                 statusBox.innerHTML = `✅ <strong>Success!</strong> ${result.message}`;
+
+                // Fetch and display latest results if jobs were found
+                if (result.job_count > 0) {
+                    try {
+                        const latestJobsResponse = await fetch(`/api/jobs?limit=${result.job_count}&t=${new Date().getTime()}`);
+                        const latestJobs = await latestJobsResponse.json();
+
+                        resultsBody.innerHTML = '';
+                        latestJobs.forEach(job => {
+                            const row = `
+                                <tr>
+                                    <td class="px-6 py-4"><a href="${job.job_url}" target="_blank" class="text-indigo-600 hover:text-indigo-900 font-semibold">${job.job_title}</a></td>
+                                    <td class="px-6 py-4">${job.company_name}</td>
+                                    <td class="px-6 py-4">${job.location}</td>
+                                </tr>
+                            `;
+                            resultsBody.innerHTML += row;
+                        });
+                        resultsContainer.classList.remove('hidden');
+                    } catch (e) {
+                        console.error("Error fetching latest jobs:", e);
+                    }
+                }
             } else {
                 statusBox.classList.add('bg-red-100', 'text-red-800');
                 statusBox.textContent = `❌ Error: ${result.message}`;
             }
             statusBox.classList.remove('hidden');
 
-            // Optionally refresh table in background
+            // Refresh full database table
             fetchAndDisplayJobs();
 
             scrapeButton.textContent = 'Scrape INDEED';

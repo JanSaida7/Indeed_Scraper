@@ -19,14 +19,17 @@ from job_scraper import get_db_connection, scrape_and_store_jobs
 # --- Flask Application ---
 app = Flask(__name__)
 
-def fetch_jobs_from_db():
-    """Fetches all jobs from the database and returns them as a list of dicts."""
+def fetch_jobs_from_db(limit=None):
+    """Fetches jobs from the database, optionally limited by count."""
     conn = get_db_connection()
     jobs = []
     if not conn: return jobs
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT job_title, company_name, location, to_char(post_date, 'YYYY-MM-DD') as post_date, job_url FROM jobs ORDER BY extracted_at DESC;")
+            query = "SELECT job_title, company_name, location, to_char(post_date, 'YYYY-MM-DD') as post_date, job_url FROM jobs ORDER BY extracted_at DESC"
+            if limit:
+                query += f" LIMIT {limit}"
+            cursor.execute(query)
             column_names = [desc[0] for desc in cursor.description]
             jobs = [dict(zip(column_names, record)) for record in cursor.fetchall()]
     except Exception as e:
@@ -42,8 +45,9 @@ def home():
 
 @app.route('/api/jobs')
 def get_jobs_api():
-    """API endpoint to get all jobs from the database as JSON."""
-    return jsonify(fetch_jobs_from_db())
+    """API endpoint to get jobs. Supports ?limit=N."""
+    limit = request.args.get('limit')
+    return jsonify(fetch_jobs_from_db(limit))
 
 @app.route('/api/scrape', methods=['POST'])
 def scrape_jobs_api():
