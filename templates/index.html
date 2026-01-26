@@ -53,6 +53,9 @@
             </div>
         </form>
 
+        <!-- Scrape Status Notification -->
+        <div id="scrape-status" class="hidden mb-8 p-4 rounded-md text-center font-medium"></div>
+
         <div class="flex justify-center space-x-4 mb-8 border-t pt-8">
             <button id="export-csv"
                 class="py-2 px-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-700">Export CSV</button>
@@ -77,6 +80,15 @@
             </table>
         </main>
 
+        <!-- Raw Data Toggle -->
+        <div class="mt-4 text-right">
+            <button id="toggle-debug"
+                class="text-xs text-gray-500 hover:text-gray-700 underline focus:outline-none">Show Raw Data
+                (Debug)</button>
+        </div>
+        <pre id="debug-view"
+            class="hidden mt-2 p-4 bg-gray-900 text-green-400 rounded text-xs overflow-x-auto h-64"></pre>
+
     </div>
 
     <script>
@@ -89,6 +101,9 @@
 
                 const jobs = await response.json();
                 console.log("Jobs received:", jobs);
+
+                // Populate debug view (hidden by default)
+                document.getElementById('debug-view').textContent = JSON.stringify(jobs, null, 2);
 
                 const tableBody = document.getElementById('jobs-table-body');
                 tableBody.innerHTML = ''; // Clear existing rows
@@ -140,11 +155,34 @@
             });
             const result = await response.json();
 
-            alert(result.message); // Show completion message
+            // Show Status Box
+            const statusBox = document.getElementById('scrape-status');
+            statusBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+
+            if (result.status === 'success') {
+                statusBox.classList.add('bg-green-100', 'text-green-800');
+                statusBox.innerHTML = `✅ <strong>Success!</strong> ${result.message}`;
+            } else {
+                statusBox.classList.add('bg-red-100', 'text-red-800');
+                statusBox.textContent = `❌ Error: ${result.message}`;
+            }
+            statusBox.classList.remove('hidden');
+
             fetchAndDisplayJobs(); // Refresh the table with new data
 
             scrapeButton.textContent = 'Scrape INDEED';
             scrapeButton.disabled = false;
+        });
+
+        // Toggle Debug View
+        document.getElementById('toggle-debug').addEventListener('click', () => {
+            const debugView = document.getElementById('debug-view');
+            debugView.classList.toggle('hidden');
+            if (debugView.classList.contains('hidden')) {
+                document.getElementById('toggle-debug').textContent = 'Show Raw Data (Debug)';
+            } else {
+                document.getElementById('toggle-debug').textContent = 'Hide Raw Data';
+            }
         });
 
         // Handle CSV export
