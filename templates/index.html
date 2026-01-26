@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Scraper Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="container mx-auto p-8 bg-white shadow-xl rounded-lg max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold">Job Scraper Dashboard</h1>
+        </header>
+
+        <form id="scrape-form" class="grid grid-cols-2 gap-6 mb-8">
+            <div>
+                <label for="keyword" class="block text-sm font-medium text-gray-700">Job Keyword</label>
+                <input type="text" id="keyword" name="keyword" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Salesforce Developer, Data Analyst">
+            </div>
+            <div>
+                <label for="country" class="block text-sm font-medium text-gray-700">Country Code (2-letter ISO)</label>
+                <input type="text" id="country" name="country" value="IN" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50" readonly>
+            </div>
+            <div>
+                <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                <input type="text" id="location" name="location" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Hyderabad, New York">
+            </div>
+            <div>
+                <label for="maxItems" class="block text-sm font-medium text-gray-700">Max Items to Scrape</label>
+                <input type="number" id="maxItems" name="maxItems" value="10" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div class="col-span-2 flex items-end justify-between">
+                <div>
+                    <label for="source" class="block text-sm font-medium text-gray-700">Select Source</label>
+                    <select id="source" name="source" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option>Indeed</option>
+                    </select>
+                </div>
+                <button type="submit" id="scrape-button" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Scrape INDEED
+                </button>
+            </div>
+        </form>
+        
+        <div class="flex justify-center space-x-4 mb-8 border-t pt-8">
+            <button id="export-csv" class="py-2 px-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-700">Export CSV</button>
+            <button id="export-json" class="py-2 px-6 font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">Export JSON</button>
+        </div>
+
+        <main class="bg-white rounded-lg overflow-hidden">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Current Jobs in Database</h2>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Job Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Posted On</th>
+                    </tr>
+                </thead>
+                <tbody id="jobs-table-body" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script>
+        // Function to fetch jobs and update the table
+        async function fetchAndDisplayJobs() {
+            const response = await fetch('/api/jobs');
+            const jobs = await response.json();
+            const tableBody = document.getElementById('jobs-table-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            if (jobs.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">No jobs found in the database.</td></tr>';
+            } else {
+                jobs.forEach(job => {
+                    const row = `
+                        <tr>
+                            <td class="px-6 py-4"><a href="${job.job_url}" target="_blank" class="text-indigo-600 hover:text-indigo-900 font-semibold">${job.job_title}</a></td>
+                            <td class="px-6 py-4">${job.company_name}</td>
+                            <td class="px-6 py-4">${job.location}</td>
+                            <td class="px-6 py-4">${job.post_date || 'N/A'}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            }
+        }
+
+        // --- Event Listeners ---
+
+        // Fetch jobs when the page loads
+        document.addEventListener('DOMContentLoaded', fetchAndDisplayJobs);
+
+        // Handle the scrape form submission
+        document.getElementById('scrape-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const scrapeButton = document.getElementById('scrape-button');
+            scrapeButton.textContent = 'Scraping...';
+            scrapeButton.disabled = true;
+
+            const formData = {
+                keyword: document.getElementById('keyword').value,
+                location: document.getElementById('location').value,
+                maxItems: document.getElementById('maxItems').value,
+            };
+
+            const response = await fetch('/api/scrape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            const result = await response.json();
+            
+            alert(result.message); // Show completion message
+            fetchAndDisplayJobs(); // Refresh the table with new data
+
+            scrapeButton.textContent = 'Scrape INDEED';
+            scrapeButton.disabled = false;
+        });
+
+        // Handle CSV export
+        document.getElementById('export-csv').addEventListener('click', async () => {
+            const response = await fetch('/api/export/csv');
+            const result = await response.json();
+            alert(result.message);
+        });
+
+        // Handle JSON export
+        document.getElementById('export-json').addEventListener('click', async () => {
+            const response = await fetch('/api/export/json');
+            const result = await response.json();
+            alert(result.message);
+        });
+
+    </script>
+</body>
+</html>
