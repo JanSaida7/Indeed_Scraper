@@ -61,8 +61,13 @@ def scrape_jobs_api():
         max_items = 10
     
     print(f"Received scrape request: keyword='{keyword}', location='{location}', max_items={max_items}")
-    asyncio.run(scrape_and_store_jobs(keyword, location, max_items))
-    return jsonify({"status": "success", "message": "Scraping completed."})
+    count = asyncio.run(scrape_and_store_jobs(keyword, location, max_items))
+    return jsonify({
+        "status": "success", 
+        "message": f"Scraping completed. Found {count} jobs for '{keyword}'.",
+        "job_count": count,
+        "keyword": keyword
+    })
 
 @app.route('/api/export/json')
 def export_json():
