@@ -9,7 +9,9 @@ This module provides routes for:
 import os
 import asyncio
 import psycopg2
-from flask import Flask, render_template, jsonify, request
+import csv
+import io
+from flask import Flask, render_template, jsonify, request, make_response
 
 # Import the functions and variables from our scraper module
 from job_scraper import get_db_connection, scrape_and_store_jobs
@@ -61,6 +63,34 @@ def scrape_jobs_api():
     print(f"Received scrape request: keyword='{keyword}', location='{location}', max_items={max_items}")
     asyncio.run(scrape_and_store_jobs(keyword, location, max_items))
     return jsonify({"status": "success", "message": "Scraping completed."})
+
+@app.route('/api/export/json')
+def export_json():
+    """Export all jobs as a downloadable JSON file."""
+    jobs = fetch_jobs_from_db()
+    response = make_response(jsonify(jobs))
+    response.headers['Content-Disposition'] = 'attachment; filename=jobs_export.json'
+    response.mimetype = 'application/json'
+    return response
+
+@app.route('/api/export/csv')
+def export_csv():
+    """Export all jobs as a downloadable CSV file."""
+    jobs = fetch_jobs_from_db()
+    if not jobs:
+        return jsonify({"message": "No jobs to export"}), 404
+
+    # Create a CSV in memory
+    si = io.StringIO()
+    if jobs:
+        cw = csv.DictWriter(si, fieldnames=jobs[0].keys())
+        cw.writeheader()
+        cw.writerows(jobs)
+    
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=jobs_export.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
