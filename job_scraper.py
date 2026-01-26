@@ -84,20 +84,25 @@ async def scrape_and_store_jobs(keyword, location, max_items):
 
         if actor_run['status'] != 'SUCCEEDED':
             print(f"❌ Actor run failed with status: {actor_run['status']}.")
-            return
+            print(f"❌ Actor run failed with status: {actor_run['status']}.")
+            return 0
         
         print("✅ Actor run SUCCEEDED. Storing results...")
         conn = get_db_connection()
         if not conn: return
         try:
             dataset_items = apify_client.dataset(actor_run['defaultDatasetId']).list_items().items
+            count = 0
             for item in dataset_items:
-                insert_job_data(conn, item)
-            print(f"✅ Successfully stored/updated {len(dataset_items)} jobs.")
+                if insert_job_data(conn, item):
+                    count += 1
+            print(f"✅ Successfully stored/updated {count} jobs.")
+            return count
         finally:
             conn.close()
     except Exception as e:
         print(f"❌ An unexpected error occurred during scraping: {e}")
+        return 0
 
 # --- 3. Execution Block (Only runs when you execute 'python job_scraper.py') ---
 if __name__ == '__main__':
