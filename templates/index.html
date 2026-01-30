@@ -6,23 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Scraper Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <div class="container mx-auto p-8 bg-white shadow-xl rounded-lg max-w-4xl">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold">Job Scraper Dashboard</h1>
+    <div class="container mx-auto p-0 md:p-8 md:my-8 bg-white shadow-2xl rounded-2xl max-w-5xl overflow-hidden fade-in">
+        <header class="text-center p-10 bg-gradient-to-r from-indigo-600 to-purple-600 text-white mb-8">
+            <h1 class="text-5xl font-extrabold tracking-tight mb-2">Job Scraper</h1>
+            <p class="text-indigo-100 text-lg opacity-90">Find your next opportunity with ease.</p>
         </header>
 
         <!-- Navigation Tabs -->
-        <div class="flex justify-center mb-8 border-b">
-            <button id="nav-scraper"
-                class="px-6 py-2 font-medium text-indigo-600 border-b-2 border-indigo-600 focus:outline-none">Scrape
-                Jobs</button>
-            <button id="nav-database"
-                class="px-6 py-2 font-medium text-gray-500 hover:text-indigo-600 focus:outline-none">View
-                Database</button>
+        <div class="flex justify-center mb-8 border-b border-gray-100 pb-4">
+            <div class="bg-gray-100 p-1 rounded-full flex space-x-2">
+                <button id="nav-scraper"
+                    class="px-8 py-2 rounded-full font-semibold text-white bg-indigo-600 shadow-md transition-all duration-300 focus:outline-none">Scraper</button>
+                <button id="nav-database"
+                    class="px-8 py-2 rounded-full font-semibold text-gray-500 hover:text-gray-700 transition-all duration-300 focus:outline-none">Database</button>
+            </div>
         </div>
 
         <!-- Scraper Tab Content -->
@@ -142,21 +144,21 @@
                 databaseTab.classList.add('hidden');
 
                 // Update Nav Styles
-                navScraper.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
-                navScraper.classList.remove('text-gray-500');
+                navScraper.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                navScraper.classList.remove('text-gray-500', 'hover:text-gray-700');
 
-                navDatabase.classList.add('text-gray-500');
-                navDatabase.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                navDatabase.classList.add('text-gray-500', 'hover:text-gray-700');
+                navDatabase.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
             } else {
                 scraperTab.classList.add('hidden');
                 databaseTab.classList.remove('hidden');
 
                 // Update Nav Styles
-                navDatabase.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
-                navDatabase.classList.remove('text-gray-500');
+                navDatabase.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                navDatabase.classList.remove('text-gray-500', 'hover:text-gray-700');
 
-                navScraper.classList.add('text-gray-500');
-                navScraper.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                navScraper.classList.add('text-gray-500', 'hover:text-gray-700');
+                navScraper.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
 
                 fetchAndDisplayJobs(); // Refresh data when switching to database view
             }
