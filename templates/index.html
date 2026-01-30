@@ -28,43 +28,42 @@
         </div>
 
         <!-- Scraper Tab Content -->
-        <div id="scraper-tab">
-            <form id="scrape-form" class="grid grid-cols-2 gap-6 mb-8">
-                <div>
-                    <label for="keyword" class="block text-sm font-medium text-gray-700">Job Keyword</label>
-                    <input type="text" id="keyword" name="keyword"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="e.g., Salesforce Developer, Data Analyst">
-                </div>
-                <div>
-                    <label for="country" class="block text-sm font-medium text-gray-700">Country Code (2-letter
-                        ISO)</label>
-                    <input type="text" id="country" name="country" value="IN"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
-                        readonly>
-                </div>
-                <div>
-                    <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                    <input type="text" id="location" name="location"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="e.g., Hyderabad, New York">
-                </div>
-                <div>
-                    <label for="maxItems" class="block text-sm font-medium text-gray-700">Max Items to Scrape</label>
-                    <input type="number" id="maxItems" name="maxItems" value="10"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="col-span-2 flex items-end justify-between">
-                    <div>
-                        <label for="source" class="block text-sm font-medium text-gray-700">Select Source</label>
-                        <select id="source" name="source"
-                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                            <option>Indeed</option>
-                        </select>
+        <div id="scraper-tab" class="p-6">
+            <form id="scrape-form" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="space-y-2">
+                    <label for="keyword" class="text-sm font-semibold text-gray-700 tracking-wide">Job Keyword</label>
+                    <div class="relative">
+                        <input type="text" id="keyword" name="keyword"
+                            class="w-full pl-4 pr-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                            placeholder="e.g., Salesforce Developer">
                     </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="location" class="text-sm font-semibold text-gray-700 tracking-wide">Location</label>
+                    <input type="text" id="location" name="location"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        placeholder="e.g., Hyderabad, Remote">
+                </div>
+
+                <div class="space-y-2">
+                    <label for="maxItems" class="text-sm font-semibold text-gray-700 tracking-wide">Max Items</label>
+                    <input type="number" id="maxItems" name="maxItems" value="10" min="1" max="100"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-semibold text-gray-700 tracking-wide">Source</label>
+                    <div
+                        class="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl text-gray-500 cursor-not-allowed">
+                        Indeed
+                    </div>
+                </div>
+
+                <div class="col-span-1 md:col-span-2 pt-2">
                     <button type="submit" id="scrape-button"
-                        class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Scrape INDEED
+                        class="w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Start Scraping Jobs
                     </button>
                 </div>
             </form>
