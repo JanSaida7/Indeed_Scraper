@@ -112,6 +112,9 @@
 
     </div>
 
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
     <script>
         const navScraper = document.getElementById('nav-scraper');
         const navDatabase = document.getElementById('nav-database');
@@ -200,6 +203,31 @@
             }
         }
 
+        // --- Toast Notification Logic ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            const icon = type === 'success' ? '✅' : '❌';
+            const colorClass = type === 'success' ? 'text-green-800' : 'text-red-800'; // Fallback text color
+
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${icon}</div>
+                <div class="text-sm font-medium text-gray-800">${message}</div>
+            `;
+
+            container.appendChild(toast);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease-out forwards';
+                toast.addEventListener('animationend', () => {
+                    toast.remove();
+                });
+            }, 3000);
+        }
+
         // --- Event Listeners ---
 
         // Fetch jobs when the page loads
@@ -231,17 +259,14 @@
                 });
                 const result = await response.json();
 
-                // Show Status Box
-                const statusBox = document.getElementById('scrape-status');
+                // UI Elements
                 const resultsContainer = document.getElementById('latest-results-container');
                 const resultsBody = document.getElementById('latest-results-body');
 
-                statusBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
                 resultsContainer.classList.add('hidden'); // Hide previous results
 
                 if (result.status === 'success') {
-                    statusBox.classList.add('bg-green-100', 'text-green-800');
-                    statusBox.innerHTML = `✅ <strong>Success!</strong> ${result.message}`;
+                    showToast(result.message, 'success');
 
                     // Fetch and display latest results if jobs were found
                     if (result.job_count > 0) {
@@ -279,17 +304,15 @@
                         }
                     }
                 } else {
-                    statusBox.classList.add('bg-red-100', 'text-red-800');
-                    statusBox.textContent = `❌ Error: ${result.message}`;
+                    showToast(`Error: ${result.message}`, 'error');
                 }
-                statusBox.classList.remove('hidden');
 
                 // Refresh full database table
                 fetchAndDisplayJobs();
 
             } catch (error) {
                 console.error("Error scraping:", error);
-                alert("An error occurred while scraping. Please try again.");
+                showToast("An error occurred while scraping. Please try again.", 'error');
             } finally {
                 // Reset Button
                 scrapeButton.innerHTML = originalButtonText;
@@ -311,18 +334,14 @@
 
         // Handle CSV export
         document.getElementById('export-csv').addEventListener('click', async () => {
-            const response = await fetch('/api/export/csv');
-            const result = await response.json();
-            alert(result.message);
+            // Check if there are jobs first (optional optimization) or just trigger download
+            window.location.href = '/api/export/csv'; // Use direct link for download
         });
 
         // Handle JSON export
         document.getElementById('export-json').addEventListener('click', async () => {
-            const response = await fetch('/api/export/json');
-            const result = await response.json();
-            alert(result.message);
+            window.location.href = '/api/export/json'; // Use direct link for download
         });
-
     </script>
 </body>
 
