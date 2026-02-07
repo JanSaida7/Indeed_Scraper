@@ -34,7 +34,7 @@ ACCESS_CODE = os.getenv('ACCESS_CODE', '12345') # Default to 12345 if not set
 
 # --- 2. Reusable Functions ---
 
-def get_db_connection():
+def get_db_connection() -> psycopg2.extensions.connection:
     """Establishes a connection to the PostgreSQL database."""
     try:
         conn = psycopg2.connect(**DB_CONFIG)
