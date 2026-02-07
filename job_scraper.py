@@ -6,6 +6,14 @@ This module handles:
 - Database operations for storing job data.
 - Data cleaning and parsing.
 """
+"""
+Core scraping module for Indeed Scraper.
+
+Handles:
+- Connecting to PostgreSQL database.
+- Interacting with Apify API.
+- Parsing and storing job data.
+"""
 import os
 import asyncio
 import datetime
