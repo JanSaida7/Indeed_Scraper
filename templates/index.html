@@ -12,18 +12,20 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
     <div class="container mx-auto p-0 md:p-8 md:my-8 bg-white shadow-2xl rounded-2xl max-w-5xl overflow-hidden fade-in">
-        <header class="text-center p-10 bg-gradient-to-r from-indigo-600 to-purple-600 text-white mb-8">
-            <h1 class="text-5xl font-extrabold tracking-tight mb-2">Job Scraper</h1>
-            <p class="text-indigo-100 text-lg opacity-90">Find your next opportunity with ease.</p>
+        <header class="text-center p-10 bg-slate-900 text-white mb-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-blue-500 opacity-10 blur-3xl"></div>
+            <h1 class="text-5xl font-extrabold tracking-tight mb-2 relative z-10">Job Scraper <span
+                    class="text-blue-500">Pro</span></h1>
+            <p class="text-slate-300 text-lg opacity-90 relative z-10">Find your next opportunity with ease.</p>
         </header>
 
         <!-- Navigation Tabs -->
         <div class="flex justify-center mb-8 border-b border-gray-100 pb-4">
-            <div class="bg-gray-100 p-1 rounded-full flex space-x-2">
+            <div class="bg-slate-100 p-1 rounded-full flex space-x-2">
                 <button id="nav-scraper"
-                    class="px-8 py-2 rounded-full font-semibold text-white bg-indigo-600 shadow-md transition-all duration-300 focus:outline-none">Scraper</button>
+                    class="px-8 py-2 rounded-full font-semibold text-white bg-blue-600 shadow-md transition-all duration-300 focus:outline-none">Scraper</button>
                 <button id="nav-database"
-                    class="px-8 py-2 rounded-full font-semibold text-gray-500 hover:text-gray-700 transition-all duration-300 focus:outline-none">Database</button>
+                    class="px-8 py-2 rounded-full font-semibold text-slate-500 hover:text-slate-700 transition-all duration-300 focus:outline-none">Database</button>
             </div>
         </div>
 
@@ -34,7 +36,7 @@
                     <label for="keyword" class="text-sm font-semibold text-gray-700 tracking-wide">Job Keyword</label>
                     <div class="relative">
                         <input type="text" id="keyword" name="keyword"
-                            class="w-full pl-4 pr-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                            class="w-full pl-4 pr-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             placeholder="e.g., Salesforce Developer">
                     </div>
                 </div>
@@ -42,14 +44,14 @@
                 <div class="space-y-2">
                     <label for="location" class="text-sm font-semibold text-gray-700 tracking-wide">Location</label>
                     <input type="text" id="location" name="location"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         placeholder="e.g., Hyderabad, Remote">
                 </div>
 
                 <div class="space-y-2">
                     <label for="maxItems" class="text-sm font-semibold text-gray-700 tracking-wide">Max Items</label>
                     <input type="number" id="maxItems" name="maxItems" value="10" min="1" max="100"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                 </div>
 
                 <div class="space-y-2">
@@ -60,20 +62,26 @@
                     </div>
                 </div>
 
+                <div class="space-y-2">
+                    <label for="accessCode" class="text-sm font-semibold text-gray-700 tracking-wide">Access Code <span
+                            class="text-red-500">*</span></label>
+                    <input type="password" id="accessCode" name="accessCode" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="Enter Access Code">
+                </div>
+
+
                 <div class="col-span-1 md:col-span-2 pt-2">
                     <button type="submit" id="scrape-button"
-                        class="w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        class="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Start Scraping Jobs
                     </button>
                 </div>
             </form>
 
-            <!-- Scrape Status Notification -->
-            <!-- Scrape Status Notification (Replaced by Toasts) -->
-
             <!-- Latest Results Preview -->
             <div id="latest-results-container" class="hidden mt-12 fade-in">
-                <h3 class="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-indigo-600 pl-4">Latest Search
+                <h3 class="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-600 pl-4">Latest Search
                     Results</h3>
                 <div id="latest-results-body" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Cards will be injected here -->
@@ -93,7 +101,7 @@
             </div>
 
             <main class="mt-8 fade-in">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-indigo-600 pl-4">Current Jobs in
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-600 pl-4">Current Jobs in
                     Database</h2>
                 <div id="jobs-table-body" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Cards will be injected here -->
@@ -111,8 +119,8 @@
         </div>
 
         <!-- Footer -->
-        <footer class="mt-12 pt-8 border-t border-gray-100 text-center text-gray-400 text-sm pb-8">
-            <p>&copy; 2026 Job Scraper. Built with Flask & TailwindCSS.</p>
+        <footer class="mt-12 pt-8 border-t border-slate-100 text-center text-slate-400 text-sm pb-8">
+            <p>&copy; 2026 Job Scraper Pro. Built with Flask & TailwindCSS.</p>
         </footer>
 
     </div>
@@ -131,22 +139,20 @@
                 scraperTab.classList.remove('hidden');
                 databaseTab.classList.add('hidden');
 
-                // Update Nav Styles
-                navScraper.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
-                navScraper.classList.remove('text-gray-500', 'hover:text-gray-700');
+                navScraper.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                navScraper.classList.remove('text-slate-500', 'hover:text-slate-700');
 
-                navDatabase.classList.add('text-gray-500', 'hover:text-gray-700');
-                navDatabase.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                navDatabase.classList.add('text-slate-500', 'hover:text-slate-700');
+                navDatabase.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
             } else {
                 scraperTab.classList.add('hidden');
                 databaseTab.classList.remove('hidden');
 
-                // Update Nav Styles
-                navDatabase.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
-                navDatabase.classList.remove('text-gray-500', 'hover:text-gray-700');
+                navDatabase.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                navDatabase.classList.remove('text-slate-500', 'hover:text-slate-700');
 
-                navScraper.classList.add('text-gray-500', 'hover:text-gray-700');
-                navScraper.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                navScraper.classList.add('text-slate-500', 'hover:text-slate-700');
+                navScraper.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
 
                 fetchAndDisplayJobs(); // Refresh data when switching to database view
             }
@@ -165,40 +171,16 @@
                 const jobs = await response.json();
                 console.log("Jobs received:", jobs);
 
-                // Populate debug view (hidden by default)
                 document.getElementById('debug-view').textContent = JSON.stringify(jobs, null, 2);
 
                 const tableBody = document.getElementById('jobs-table-body');
                 tableBody.innerHTML = ''; // Clear existing rows
 
                 if (!Array.isArray(jobs) || jobs.length === 0) {
-                    tableBody.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500 text-lg">No jobs found in the database.</div>';
+                    tableBody.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500 text-lg">No jobs found in the database.</div>';
                 } else {
                     jobs.forEach(job => {
-                        const card = `
-                            <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 flex flex-col justify-between h-full job-card">
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight line-clamp-2" title="${job.job_title}">
-                                        ${job.job_title}
-                                    </h3>
-                                    <p class="text-indigo-600 font-medium text-sm mb-4">${job.company_name}</p>
-                                    
-                                    <div class="space-y-2 text-sm text-gray-600 mb-4">
-                                        <div class="flex items-center">
-                                            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                            ${job.location}
-                                        </div>
-                                        <div class="flex items-center">
-                                            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                            ${job.post_date || 'N/A'}
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="${job.job_url}" target="_blank" class="block w-full text-center py-2 px-4 bg-gray-50 hover:bg-indigo-50 text-indigo-600 font-medium rounded-lg transition-colors mt-auto border border-gray-100 hover:border-indigo-100">
-                                    View Job
-                                </a>
-                            </div>
-                        `;
+                        const card = createJobCard(job);
                         tableBody.innerHTML += card;
                     });
                 }
@@ -208,13 +190,40 @@
             }
         }
 
+        function createJobCard(job) {
+            return `
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border border-slate-100 flex flex-col justify-between h-full job-card group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300"></div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors" title="${job.job_title}">
+                            ${job.job_title}
+                        </h3>
+                        <p class="text-blue-500 font-semibold text-sm mb-4 uppercase tracking-wide">${job.company_name}</p>
+                        
+                        <div class="space-y-3 text-sm text-slate-600 mb-6">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3 text-slate-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span class="font-medium">${job.location}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3 text-slate-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span class="font-medium">${job.post_date || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="${job.job_url}" target="_blank" class="block w-full text-center py-3 px-4 bg-slate-50 hover:bg-blue-600 hover:text-white text-blue-600 font-bold rounded-lg transition-all border border-slate-200 hover:border-blue-600 mt-auto">
+                        Apply Now &rarr;
+                    </a>
+                </div>
+            `;
+        }
+
         // --- Toast Notification Logic ---
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
 
             const icon = type === 'success' ? '✅' : '❌';
-            const colorClass = type === 'success' ? 'text-green-800' : 'text-red-800'; // Fallback text color
 
             toast.className = `toast ${type}`;
             toast.innerHTML = `
@@ -224,7 +233,6 @@
 
             container.appendChild(toast);
 
-            // Remove after 3 seconds
             setTimeout(() => {
                 toast.style.animation = 'fadeOut 0.3s ease-out forwards';
                 toast.addEventListener('animationend', () => {
@@ -235,17 +243,14 @@
 
         // --- Event Listeners ---
 
-        // Fetch jobs when the page loads
         document.addEventListener('DOMContentLoaded', fetchAndDisplayJobs);
 
-        // Handle the scrape form submission
         document.getElementById('scrape-form').addEventListener('submit', async function (event) {
             event.preventDefault();
 
             const scrapeButton = document.getElementById('scrape-button');
             const originalButtonText = scrapeButton.innerHTML;
 
-            // Show Loading State
             scrapeButton.innerHTML = '<span class="spinner"></span> Scraping Jobs...';
             scrapeButton.disabled = true;
             scrapeButton.classList.add('opacity-75', 'cursor-not-allowed');
@@ -254,6 +259,7 @@
                 keyword: document.getElementById('keyword').value,
                 location: document.getElementById('location').value,
                 maxItems: document.getElementById('maxItems').value,
+                accessCode: document.getElementById('accessCode').value
             };
 
             try {
@@ -264,16 +270,14 @@
                 });
                 const result = await response.json();
 
-                // UI Elements
                 const resultsContainer = document.getElementById('latest-results-container');
                 const resultsBody = document.getElementById('latest-results-body');
 
-                resultsContainer.classList.add('hidden'); // Hide previous results
+                resultsContainer.classList.add('hidden');
 
                 if (result.status === 'success') {
                     showToast(result.message, 'success');
 
-                    // Fetch and display latest results if jobs were found
                     if (result.job_count > 0) {
                         try {
                             const latestJobsResponse = await fetch(`/api/jobs?limit=${result.job_count}&t=${new Date().getTime()}`);
@@ -281,26 +285,7 @@
 
                             resultsBody.innerHTML = '';
                             latestJobs.forEach(job => {
-                                const card = `
-                                    <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 flex flex-col justify-between h-full job-card">
-                                        <div>
-                                            <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight line-clamp-2" title="${job.job_title}">
-                                                ${job.job_title}
-                                            </h3>
-                                            <p class="text-indigo-600 font-medium text-sm mb-4">${job.company_name}</p>
-                                            
-                                            <div class="space-y-2 text-sm text-gray-600 mb-4">
-                                                <div class="flex items-center">
-                                                    <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                                    ${job.location}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <a href="${job.job_url}" target="_blank" class="block w-full text-center py-2 px-4 bg-gray-50 hover:bg-indigo-50 text-indigo-600 font-medium rounded-lg transition-colors mt-auto border border-gray-100 hover:border-indigo-100">
-                                            View Job
-                                        </a>
-                                    </div>
-                                `;
+                                const card = createJobCard(job);
                                 resultsBody.innerHTML += card;
                             });
                             resultsContainer.classList.remove('hidden');
@@ -312,21 +297,18 @@
                     showToast(`Error: ${result.message}`, 'error');
                 }
 
-                // Refresh full database table
                 fetchAndDisplayJobs();
 
             } catch (error) {
                 console.error("Error scraping:", error);
                 showToast("An error occurred while scraping. Please try again.", 'error');
             } finally {
-                // Reset Button
                 scrapeButton.innerHTML = originalButtonText;
                 scrapeButton.disabled = false;
                 scrapeButton.classList.remove('opacity-75', 'cursor-not-allowed');
             }
         });
 
-        // Toggle Debug View
         document.getElementById('toggle-debug').addEventListener('click', () => {
             const debugView = document.getElementById('debug-view');
             debugView.classList.toggle('hidden');
@@ -337,15 +319,12 @@
             }
         });
 
-        // Handle CSV export
         document.getElementById('export-csv').addEventListener('click', async () => {
-            // Check if there are jobs first (optional optimization) or just trigger download
-            window.location.href = '/api/export/csv'; // Use direct link for download
+            window.location.href = '/api/export/csv';
         });
 
-        // Handle JSON export
         document.getElementById('export-json').addEventListener('click', async () => {
-            window.location.href = '/api/export/json'; // Use direct link for download
+            window.location.href = '/api/export/json';
         });
     </script>
 </body>
