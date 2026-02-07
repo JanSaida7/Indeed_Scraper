@@ -4,7 +4,7 @@ Flask application for the Indeed Job Scraper.
 This module provides routes for:
 - Serving the main dashboard.
 - API access to stored jobs.
-- API endpoint to trigger the scraper.
+- API endpoint to trigger the scraper with Access Code validation.
 """
 import os
 import asyncio
