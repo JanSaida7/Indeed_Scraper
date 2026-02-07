@@ -86,3 +86,9 @@ The application exposes the following API endpoints:
 -   `job_scraper.py`: Core logic for scraping (via Apify) and database operations.
 -   `standalone_scraper.py`: a versatile script for running scraping jobs independent of the web server.
 -   `templates/index.html`: The HTML template for the web dashboard.
+
+## Troubleshooting
+
+-   **Database Connection Error**: Ensure PostgreSQL is running and credentials in `.env` are correct.
+-   **Scraper Fails**: Check if your Apify Token is valid and has sufficient credits.
+-   **Invalid Access Code**: Verify the `ACCESS_CODE` in `.env` matches what you are entering in the UI.
