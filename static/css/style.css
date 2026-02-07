@@ -1,0 +1,86 @@
+/* Custom Styles for Indeed Scraper */
+
+:root {
+    --primary-color: #0f172a;
+    /* Slate 900 */
+    --primary-hover: #1e293b;
+    /* Slate 800 */
+    --accent-color: #3b82f6;
+    /* Blue 500 */
+    --bg-color: #f8fafc;
+    /* Slate 50 */
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Smooth Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Card Hover Effect */
+.job-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c7c7c7;
+    border-radius: 4px;
+}
+
+/* Loading Spinner */
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid #ffffff;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
