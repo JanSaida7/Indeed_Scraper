@@ -51,6 +51,102 @@ def get_db_connection() -> psycopg2.extensions.connection:
         print(f"Database connection error: {e}")
         return None
 
+def create_users_table(conn):
+    """Creates the 'users' table if it doesn't exist."""
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    password_hash VARCHAR(255) NOT NULL,
+                    role VARCHAR(20) DEFAULT 'normal',
+                    scrape_count INTEGER DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            conn.commit()
+            print("Users table checked/created.")
+    except Exception as e:
+        print(f"Error creating users table: {e}")
+
+def create_user(username, password, role='normal'):
+    """Creates a new user with a hashed password."""
+    conn = get_db_connection()
+    if not conn: return False
+    
+    password_hash = hashlib.sha256(password.encode()).hexdigest()
+    
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s) RETURNING id",
+                (username, password_hash, role)
+            )
+            user_id = cursor.fetchone()[0]
+            conn.commit()
+            print(f"User '{username}' created with ID {user_id} and role '{role}'.")
+            return True
+    except psycopg2.IntegrityError:
+        print(f"User '{username}' already exists.")
+        return False
+    except Exception as e:
+        print(f"Error creating user: {e}")
+        return False
+    finally:
+        conn.close()
+
+def authenticate_user(username, password):
+    """Authenticates a user and returns their details if successful."""
+    conn = get_db_connection()
+    if not conn: return None
+    
+    password_hash = hashlib.sha256(password.encode()).hexdigest()
+    
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT id, username, role, scrape_count FROM users WHERE username = %s AND password_hash = %s",
+                (username, password_hash)
+            )
+            user = cursor.fetchone()
+            if user:
+                return {
+                    "id": user[0],
+                    "username": user[1],
+                    "role": user[2],
+                    "scrape_count": user[3]
+                }
+            return None
+    except Exception as e:
+        print(f"Authentication error: {e}")
+        return None
+    finally:
+        conn.close()
+
+def increment_scrape_count(user_id):
+    """Increments the scrape count for a user."""
+    conn = get_db_connection()
+    if not conn: return
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("UPDATE users SET scrape_count = scrape_count + 1 WHERE id = %s", (user_id,))
+            conn.commit()
+    except Exception as e:
+        print(f"Error updating scrape count: {e}")
+    finally:
+        conn.close()
+
+def get_user_limits(role):
+    """Returns limit configuration based on user role."""
+    if role == 'admin':
+        return {"max_items": float('inf'), "max_scrapes": float('inf')}
+    elif role == 'access_code':
+        return {"max_items": 10, "max_scrapes": 5}
+    else: # normal
+        return {"max_items": 5, "max_scrapes": 3}
+
+
 def parse_post_date(raw_post_date):
     if not raw_post_date: return None
     raw_post_date_lower = str(raw_post_date).lower().strip()
