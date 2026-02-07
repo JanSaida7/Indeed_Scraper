@@ -14,7 +14,7 @@ import io
 from flask import Flask, render_template, jsonify, request, make_response
 
 # Import the functions and variables from our scraper module
-from job_scraper import get_db_connection, scrape_and_store_jobs
+from job_scraper import get_db_connection, scrape_and_store_jobs, ACCESS_CODE
 
 # --- Flask Application ---
 app = Flask(__name__)
@@ -63,6 +63,14 @@ def scrape_jobs_api():
     except (ValueError, TypeError):
         # If the input isn't a valid number, default to 10
         max_items = 10
+    
+    # Check Access Code
+    user_access_code = data.get('accessCode')
+    if user_access_code != ACCESS_CODE:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid Access Code. You are not authorized to use the scraper."
+        }), 403
     
     print(f"Received scrape request: keyword='{keyword}', location='{location}', max_items={max_items}")
     count = asyncio.run(scrape_and_store_jobs(keyword, location, max_items))
