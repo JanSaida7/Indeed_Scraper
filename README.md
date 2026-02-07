@@ -92,3 +92,6 @@ The application exposes the following API endpoints:
 -   **Database Connection Error**: Ensure PostgreSQL is running and credentials in `.env` are correct.
 -   **Scraper Fails**: Check if your Apify Token is valid and has sufficient credits.
 -   **Invalid Access Code**: Verify the `ACCESS_CODE` in `.env` matches what you are entering in the UI.
+
+## Author
+Built with ❤️ by Jan using Python and Flask.
