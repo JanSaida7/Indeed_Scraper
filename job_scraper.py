@@ -25,8 +25,12 @@ DB_CONFIG = {
     'user': os.getenv('DB_USER'),
     'password': os.getenv('DB_PASSWORD'),
     'host': os.getenv('DB_HOST'),
+    'host': os.getenv('DB_HOST'),
     'port': os.getenv('DB_PORT')
 }
+
+# Access Code for Restriction
+ACCESS_CODE = os.getenv('ACCESS_CODE', '12345') # Default to 12345 if not set
 
 # --- 2. Reusable Functions ---
 
